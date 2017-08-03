@@ -7,7 +7,7 @@ defmodule ESpec.Bash.Mock do
     atom
   end
 
-  @spec outputs(mock :: atom, output :: String.t, args :: keyword) :: atom
+  @spec outputs(mock :: atom, output :: String.t, args :: list) :: atom
   def outputs(mock, output, args \\ []) do
     GenServer.cast(ESpec.Bash.Mock.Server, { :stub, mock, output, args})
     mock
@@ -20,16 +20,7 @@ defmodule ESpec.Bash.Mock do
 
   @spec verify(mock :: atom, args :: list, opts :: keyword) :: nil
   def verify(mock, args \\ [], opts \\ []) do
-    result = GenServer.call(ESpec.Bash.Mock.Server, { :verify, mock, args, opts })
-    case result do
-      { false, message} -> raise ESpec.AssertionError,
-                      subject: mock,
-                      data: args,
-                      result: result,
-                      asserion: __MODULE__,
-                      message: message
-      { true, _message } -> nil
-    end
+    GenServer.call(ESpec.Bash.Mock.Server, { :verify, mock, args, opts })
   end
 
 end

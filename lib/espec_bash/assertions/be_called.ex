@@ -6,11 +6,12 @@ defmodule ESpec.Bash.Assertions.BeCalled do
     Mock.verify(subject, data)
   end
 
-  defp success_message(subject, data, result, positive) do
-    "call was matched #{to_string(subject)} #{Enum.join(data, " ")}"
+  defp success_message(_subject, _data, result, _positive) do
+    result
   end
 
-  defp error_message(subject, data, result, poasitive) do
+  defp error_message(_subject, _data, result, _positive) do
+    result
   end
 
 end

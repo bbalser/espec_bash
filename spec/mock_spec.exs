@@ -56,8 +56,8 @@ defmodule ESpec.Bash.MockSpec do
       end
 
       it "should fail if not invoked" do
-        output = try_and_rescue(fn -> Mock.verify(mock()) end)
-        expect(output) |> to(eq(:failed))
+        {result, _message} = Mock.verify(mock())
+        expect(result) |> to(be_false())
       end
 
       it "should match arguments when verifying invocation" do
@@ -67,15 +67,15 @@ defmodule ESpec.Bash.MockSpec do
 
       it "should fail if arguments do not match" do
         Mock.invoke(mock(), ["-x", "-m"])
-        output = try_and_rescue(fn -> Mock.verify(mock(), ["-a", "-b"]) end)
-        expect(output) |> to(eq(:failed))
+        {result, _message} = Mock.verify(mock(), ["-a", "-b"])
+        expect(result) |> to(be_false())
       end
 
       it "should fail when invoked twice but asked to verify 1 invocation" do
         Mock.invoke(mock(), [true, 1])
         Mock.invoke(mock(), [false, 1])
-        output = try_and_rescue(fn -> Mock.verify(mock(), [ESpec.Bash.any(), 1], times: 1) end)
-        expect(output) |> to(eq(:failed))
+        {result, _message} = Mock.verify(mock(), [ESpec.Bash.any(), 1], times: 1)
+        expect(result) |> to(be_false())
       end
 
       context "leverages espec matchers" do
@@ -95,8 +95,8 @@ defmodule ESpec.Bash.MockSpec do
       end
 
       it "should report how many times it was called when times expectation is not met" do
-        output = rescue_with_message(fn -> Mock.verify(mock(), [], times: 1) end)
-        expect(output) |> to(eq(
+        {_result, message} = Mock.verify(mock(), [], times: 1)
+        expect(message) |> to(eq(
               "Mock `pwd` did not match\n" <>
                 "\texpected invocation: pwd \n" <>
                 "\texpected number of invocations: 1\n" <>
@@ -106,8 +106,8 @@ defmodule ESpec.Bash.MockSpec do
       it "should report number of invocations properly when espec matcher is used" do
         Mock.invoke(mock())
         Mock.invoke(mock())
-        output = rescue_with_message(fn -> Mock.verify(mock(), [], times: be(:>, 3)) end)
-        expect(output) |> to(eq(
+        {_result, message} = Mock.verify(mock(), [], times: be(:>, 3))
+        expect(message) |> to(eq(
               "Mock `pwd` did not match\n" <>
                 "\texpected invocation: pwd \n" <>
                 "\texpected number of invocations: (ESpec.Assertions.Be > 3)\n" <>
@@ -115,8 +115,8 @@ defmodule ESpec.Bash.MockSpec do
       end
 
       it "should report espec assertions with only 3 argument with nice output" do
-        output = rescue_with_message(fn -> Mock.verify(mock(), [], times: eq(5)) end)
-        expect(output) |> to(eq(
+        {_result, message} = Mock.verify(mock(), [], times: eq(5))
+        expect(message) |> to(eq(
               "Mock `pwd` did not match\n" <>
                 "\texpected invocation: pwd \n" <>
                 "\texpected number of invocations: (ESpec.Assertions.Eq 5)\n" <>
@@ -126,8 +126,8 @@ defmodule ESpec.Bash.MockSpec do
       it "should display all invocations against the mock when match fails" do
         Mock.invoke(mock(), ["-a", "fred"])
         Mock.invoke(mock(), ["-b", "barney"])
-        output = rescue_with_message(fn -> Mock.verify(mock(), [], times: 1) end)
-        expect(output) |> to(eq(
+        {_result, message} = Mock.verify(mock(), [], times: 1)
+        expect(message) |> to(eq(
           "Mock `pwd` did not match\n" <>
               "\texpected invocation: pwd \n" <>
               "\texpected number of invocations: 1\n" <>
@@ -138,8 +138,8 @@ defmodule ESpec.Bash.MockSpec do
 
       it "should display all the arguments expected as well" do
         Mock.invoke(mock(), ["--apples", "-bananas"])
-        output = rescue_with_message(fn -> Mock.verify(mock(), ["--aples", ESpec.AssertionHelpers.eq("--bananas")]) end)
-        expect(output) |> to(eq(
+        {_result, message} = Mock.verify(mock(), ["--aples", ESpec.AssertionHelpers.eq("--bananas")])
+        expect(message) |> to(eq(
           "Mock `pwd` did not match\n" <>
             "\texpected invocation: pwd --aples (ESpec.Assertions.Eq --bananas)\n" <>
             "\texpected number of invocations: (ESpec.Assertions.Be > 0)\n" <>
@@ -149,23 +149,6 @@ defmodule ESpec.Bash.MockSpec do
 
     end
 
-    defp try_and_rescue(func) when is_function(func) do
-      try do
-        func.()
-        :success
-      rescue
-        _ -> :failed
-      end
-    end
-
-    defp rescue_with_message(func) when is_function(func) do
-      try do
-        func.()
-        :success
-      rescue
-        e in ESpec.AssertionError -> e.message
-      end
-    end
   end
 
 end

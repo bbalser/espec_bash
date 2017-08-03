@@ -14,6 +14,8 @@ defmodule ESpec.Bash do
     Mock.add_mock(command)
   end
 
+  defdelegate outputs(command, output, args \\ []), to: Mock
+
   def execute(command) do
     helper_path = create_mock_function(command)
     command_with_helper = "source #{helper_path} && #{command}"
@@ -29,6 +31,7 @@ defmodule ESpec.Bash do
   end
 
   def any(), do: {ESpec.Assertions.Any, ""}
+  def be_called(args), do: {ESpec.Bash.Assertions.BeCalled, args}
 
   defp create_mock_function(command) do
     content = """
