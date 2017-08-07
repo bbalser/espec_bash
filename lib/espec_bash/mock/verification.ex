@@ -4,23 +4,23 @@ defmodule ESpec.Bash.Mock.Verifier do
   def verify(mock, args, opts, state) do
     info = %{mock: mock, args: args, opts: opts, invocations: get_in(state, [mock, :invocations])}
 
-    info.invocations
-    |> Stream.filter(fn %{args: inv_args} -> all_arguments_match?(inv_args, args) end)
-    |> add_matched_count(info)
+    determine_matched_invocations(info)
     |> check()
+    |> create_message()
   end
 
-  defp add_matched_count(list, info_map) do
-    Map.put(info_map, :matched_count, Enum.count(list))
+  defp determine_matched_invocations(info_map = %{args: args, invocations: invocations}) do
+    matched_list = Enum.filter(invocations, fn %{args: inv_args} -> all_arguments_match?(inv_args, args) end)
+    Map.put(info_map, :matched_count, Enum.count(matched_list))
   end
 
   defp check(info = %{opts: opts, matched_count: count}) do
     times_matcher = Keyword.get(opts, :times, ESpec.AssertionHelpers.be(:>, 0))
-    create_message(argument_match?(count, times_matcher), Map.put(info, :times_matcher, times_matcher))
+    { argument_match?(count, times_matcher), Map.put(info, :times_matcher, times_matcher) }
   end
 
-  defp create_message(true, _info), do: {true, ""}
-  defp create_message(false, %{mock: mock, times_matcher: times_matcher, invocations: invocations, args: args}) do
+  defp create_message({true, _info}), do: {true, ""}
+  defp create_message({false, %{mock: mock, times_matcher: times_matcher, invocations: invocations, args: args}}) do
     message = "Mock `#{mock}` did not match\n" <>
                 "\texpected invocation: #{mock} #{print_matchers(args)}\n" <>
                 "\texpected number of invocations: #{print_matcher(times_matcher)}\n" <>
@@ -44,6 +44,7 @@ defmodule ESpec.Bash.Mock.Verifier do
 
   defp print_invocations(mock, invocations) do
     invocations
+    |> Enum.reverse
     |> Enum.map(fn x -> x.args end)
     |> Enum.map(fn x -> "#{mock} #{Enum.join(x, " ")}" end)
     |> Enum.join("\n\t\t")

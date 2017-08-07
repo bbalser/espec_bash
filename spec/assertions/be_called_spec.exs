@@ -9,8 +9,9 @@ defmodule ESpec.Bash.Assertions.Be_Called_Spec do
     it "should pass when an invocation is matched" do
       outputs(pwd(), "/jerks", ["-a"])
       Mock.invoke(pwd(), ["1"])
-      Mock.invoke(pwd(), ["-a"])
-      expect(pwd()) |> to(be_called([eq("-a")]))
+      output = Mock.invoke(pwd(), ["-a"])
+      expect(pwd()) |> to(be_called(["-a"]))
+      expect(output) |> to(eq("/jerks"))
     end
 
     it "should fail when no invocation is matched" do

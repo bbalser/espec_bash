@@ -132,8 +132,8 @@ defmodule ESpec.Bash.MockSpec do
               "\texpected invocation: pwd \n" <>
               "\texpected number of invocations: 1\n" <>
               "\tactual invocations:\n" <>
-              "\t\tpwd -b barney\n" <>
-              "\t\tpwd -a fred\n"))
+              "\t\tpwd -a fred\n" <>
+              "\t\tpwd -b barney\n"))
       end
 
       it "should display all the arguments expected as well" do
