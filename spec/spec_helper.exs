@@ -1,6 +1,6 @@
 ESpec.configure fn(config) ->
 
-  EspecBash.Application.ensure_distributed_node()
+  ESpec.Bash.Application.ensure_distributed_node()
 
   config.before fn(tags) ->
     Code.require_file("spec/assertions/fake.ex")

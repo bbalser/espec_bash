@@ -41,6 +41,10 @@ defmodule ESpec.Bash.Mock.Server do
     reply(:ok, %{})
   end
 
+  def handle_call(:print, _from, state) do
+    reply(state, state)
+  end
+
   defp reply(%{output: output}, state), do: { :reply, output, state }
   defp reply(output, state), do: { :reply, output, state }
 

@@ -51,8 +51,9 @@ defmodule ESpec.Bash.Mock.Verifier do
   end
 
   @spec all_arguments_match?(actual_args :: list, matched_arguments :: list) :: boolean
-  def all_arguments_match?(actual_args, matched_arguments) do
-    Enum.zip(actual_args, matched_arguments)
+  def all_arguments_match?(actual, matched) when length(actual) != length(matched), do: false
+  def all_arguments_match?(actual, matched) do
+    Enum.zip(actual, matched)
     |> Enum.all?(fn {actual_arg, matched_arg} -> argument_match?(actual_arg, matched_arg) end)
   end
 

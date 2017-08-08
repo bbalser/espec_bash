@@ -8,12 +8,20 @@ defmodule EspecBash.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      preferred_cli_env: [espec: :test],
+     escript: escript(),
      deps: deps()]
   end
 
   def application do
     [extra_applications: [:logger],
-     mod: {EspecBash.Application, []}]
+     mod: {ESpec.Bash.Application, []}]
+  end
+
+  def escript do
+    [
+      main_module: ESpec.Bash.Mock.CLI,
+      app: nil,
+    ]
   end
 
   defp deps do

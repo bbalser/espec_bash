@@ -1,4 +1,4 @@
-defmodule EspecBash.Application do
+defmodule ESpec.Bash.Application do
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -14,7 +14,6 @@ defmodule EspecBash.Application do
       worker(ESpec.Bash.Mock.Server, [])
     ]
 
-
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: ESpec.Bash.Mock.Supervisor]
@@ -25,6 +24,10 @@ defmodule EspecBash.Application do
     if node() != @node_name do
       Node.start(@node_name, :shortnames)
     end
+  end
+
+  def node_name() do
+    @node_name
   end
 
 end

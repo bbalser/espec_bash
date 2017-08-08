@@ -71,6 +71,12 @@ defmodule ESpec.Bash.MockSpec do
         expect(result) |> to(be_false())
       end
 
+      it "should fail if arguments and expected arguments are not the same length" do
+        Mock.invoke(mock(), ["-a", "-x", "-y"])
+        {result, _message} = Mock.verify(mock(), ["-a"])
+        expect(result) |> to(be_false())
+      end
+
       it "should fail when invoked twice but asked to verify 1 invocation" do
         Mock.invoke(mock(), [true, 1])
         Mock.invoke(mock(), [false, 1])
