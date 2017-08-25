@@ -2,7 +2,7 @@ defmodule ESpec.Assertions.Any do
 
   use ESpec.Assertions.Interface
 
-  defp match(subject, value) do
+  defp match(_subject, value) do
     {true, value}
   end
 

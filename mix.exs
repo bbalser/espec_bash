@@ -26,9 +26,9 @@ defmodule EspecBash.Mixfile do
 
   defp deps do
     [
-      { :mix_test_watch, "~> 0.3", only: :dev, runtime: false },
+      { :mix_test_watch, "~> 0.4.1", only: :dev, runtime: false },
       { :dialyxir, "~> 0.5.1", only: [:dev], runtime: false },
-      { :espec, "~> 1.4.1" },
+      { :espec, "~> 1.4.5" },
     ]
   end
 end

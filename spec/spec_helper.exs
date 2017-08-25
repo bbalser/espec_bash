@@ -8,6 +8,7 @@ ESpec.configure fn(config) ->
   end
 
   config.finally fn(_shared) ->
+    ESpec.Bash.Mock.clear()
     :ok
   end
 end

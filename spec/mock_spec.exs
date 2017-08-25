@@ -155,6 +155,19 @@ defmodule ESpec.Bash.MockSpec do
 
     end
 
+    describe "get_mocks" do
+
+      it "should return all mocks" do
+        Mock.add_mock("pwd")
+        Mock.add_mock("./bin/ls")
+        mocks = Mock.get_mocks()
+        expect(mocks) |> to(have_length(2))
+        expect(mocks) |> to(have(:pwd))
+        expect(mocks) |> to(have(:"./bin/ls"))
+      end
+
+    end
+
   end
 
 end

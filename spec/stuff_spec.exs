@@ -18,14 +18,14 @@ defmodule StuffSpec do
     #pwd -n jerks -a
   end
 
-  it "executes stuff" do
-    x = execute("pwd")
-    expect(x.stdout) |> to(eq("pwd"))
-  end
+  #it "executes stuff" do
+  #  x = execute("pwd")
+  #  expect(x.stdout) |> to(eq("pwd"))
+  #end
 
-  it "executes functions" do
-    x = execute_function("./stuff.sh", "ballin")
-    expect(x.stdout) |> to(eq("ballin"))
-  end
+  #it "executes functions" do
+  #  x = execute_function("./stuff.sh", "ballin")
+  #  expect(x.stdout) |> to(eq("ballin"))
+  #end
 
 end

@@ -1,6 +1,6 @@
 #!/bin/bash
 
 function ballin {
-	echo "Stuff"
+	echo "Party all day!"
 }
 

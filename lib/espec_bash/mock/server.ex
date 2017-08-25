@@ -41,6 +41,10 @@ defmodule ESpec.Bash.Mock.Server do
     reply(:ok, %{})
   end
 
+  def handle_call(:get_mocks, _from, state) do
+    reply(Map.keys(state), state)
+  end
+
   def handle_call(:print, _from, state) do
     reply(state, state)
   end
